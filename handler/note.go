@@ -3,9 +3,14 @@ package handler
 import (
 	"strconv"
 
+	"github.com/200lab-training-1/helper"
 	"github.com/200lab-training-1/models"
 	"github.com/200lab-training-1/repositories"
 	"github.com/gin-gonic/gin"
+)
+
+var (
+	pagination helper.Pagination
 )
 
 func NoteCreate(c *gin.Context, noteRepo repositories.NoteRepo) (*models.Note, error) {
@@ -34,4 +39,9 @@ func NoteUpdate(c *gin.Context, noteRepo repositories.NoteRepo) error {
 func NoteDelete(c *gin.Context, noteRepo repositories.NoteRepo) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	return noteRepo.Delete(uint(id))
+}
+
+func NoteList(c *gin.Context, noteRepo repositories.NoteRepo) ([]models.Note, error) {
+	c.ShouldBindQuery(&pagination)
+	return noteRepo.List(pagination)
 }
