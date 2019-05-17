@@ -15,7 +15,7 @@ type NoteRepoImpl struct {
 type NoteRepo interface {
 	Delete(uint) error
 	Update(uint, models.Note) error
-	Find(uint) (*models.Note, error)
+	Find(uint) (*[]models.Note, error)
 	Create(models.Note) (*models.Note, error)
 	List(helper.Pagination) ([]models.Note, error)
 }
@@ -28,15 +28,15 @@ func (noteRepo *NoteRepoImpl) Delete(id uint) error {
 
 // Update is func update a note
 func (noteRepo *NoteRepoImpl) Update(id uint, note models.Note) error {
-	err := noteRepo.DB.Where("id = ?", id).Update(&note).Error
+	err := noteRepo.DB.Model(&models.Note{}).Where("id = ?", id).Update(note).Error
 	return err
 }
 
 // Find is func find a note based on id
-func (noteRepo *NoteRepoImpl) Find(id uint) (*models.Note, error) {
-	note := &models.Note{}
-	err := noteRepo.DB.Where("id = ?", id).First(note).Error
-	return note, err
+func (noteRepo *NoteRepoImpl) Find(id uint) (*[]models.Note, error) {
+	notes := &[]models.Note{}
+	err := noteRepo.DB.Find(notes).Where("user_id = ?", id).Error
+	return notes, err
 }
 
 // Create a func create a note

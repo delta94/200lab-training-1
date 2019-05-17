@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/200lab-training-1/handler"
-	"github.com/200lab-training-1/middlewares"
 	"github.com/200lab-training-1/repositories"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -44,9 +43,9 @@ func initUserRoutes(engine *gin.Engine, db *gorm.DB) {
 
 func initNoteRoutes(engine *gin.Engine, db *gorm.DB) {
 	groupRouter := engine.Group("/note")
-	groupRouter.Use(middlewares.AuthenMiddleware)
+	groupRouter.Use()
 	{
-		groupRouter.GET(":/id", func(c *gin.Context) {
+		groupRouter.GET("/:id", func(c *gin.Context) {
 			noteRepo := &repositories.NoteRepoImpl{
 				DB: db,
 			}
@@ -82,5 +81,4 @@ func initNoteRoutes(engine *gin.Engine, db *gorm.DB) {
 
 func InitRoutes(engine *gin.Engine, db *gorm.DB) {
 	initNoteRoutes(engine, db)
-	initUserRoutes(engine, db)
 }

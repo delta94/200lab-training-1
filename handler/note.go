@@ -21,7 +21,7 @@ func NoteCreate(c *gin.Context, noteRepo repositories.NoteRepo) (*models.Note, e
 	return noteRepo.Create(note)
 }
 
-func NoteGet(c *gin.Context, noteRepo repositories.NoteRepo) (*models.Note, error) {
+func NoteGet(c *gin.Context, noteRepo repositories.NoteRepo) (*[]models.Note, error) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	return noteRepo.Find(uint(id))
 }
@@ -32,7 +32,6 @@ func NoteUpdate(c *gin.Context, noteRepo repositories.NoteRepo) error {
 	if err := c.ShouldBind(&note); err != nil {
 		return err
 	}
-	note.Title = "[Edited] " + note.Title
 	return noteRepo.Update(uint(id), note)
 }
 
