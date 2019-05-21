@@ -42,7 +42,7 @@ func initUserRoutes(engine *gin.Engine, db *gorm.DB) {
 }
 
 func initNoteRoutes(engine *gin.Engine, db *gorm.DB) {
-	groupRouter := engine.Group("/note")
+	groupRouter := engine.Group("v1/notes")
 	groupRouter.Use()
 	{
 		groupRouter.GET("/:id", func(c *gin.Context) {
