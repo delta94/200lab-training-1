@@ -15,9 +15,9 @@ func (noteRepo *NoteRepoImpl) Create(note models.Note) (*models.Note, error) {
 	return args.Get(0).(*models.Note), args.Error(1)
 }
 
-func (noteRepo *NoteRepoImpl) Find(id uint) (*models.Note, error) {
+func (noteRepo *NoteRepoImpl) Find(id uint) (*[]models.Note, error) {
 	args := noteRepo.Called(id)
-	return args.Get(0).(*models.Note), args.Error(1)
+	return args.Get(0).(*[]models.Note), args.Error(1)
 }
 
 func (noteRepo *NoteRepoImpl) List(pagination helper.Pagination) ([]models.Note, error) {

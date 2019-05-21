@@ -9,6 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type users struct {
+	Title     string `validate:"required"`
+	Completed bool
+	UserID    uint
+}
+
 var (
 	pagination helper.Pagination
 )
