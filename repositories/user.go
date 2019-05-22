@@ -19,8 +19,8 @@ func (userRepo *UserRepoImpl) Create(user models.User) (*models.User, error) {
 	return &user, err
 }
 
-func (userRepo *UserRepoImpl) Find(email string) (*models.User, error) {
+func (userRepo *UserRepoImpl) Find(username string) (*models.User, error) {
 	user := &models.User{}
-	err := userRepo.DB.Where("email = ?", email).First(user).Error
+	err := userRepo.DB.Where("username = ?", username).First(user).Error
 	return user, err
 }

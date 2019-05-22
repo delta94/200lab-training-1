@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -40,36 +41,22 @@ func SignUp(c *gin.Context, userRepo repositories.UserRepo) (string, error) {
 
 }
 
-// func Login(c *gin.Context, userRepo repositories.UserRepo) (*models.LogInResponse, error) {
-// 	userLogin := models.Login{}
-// 	if err := c.ShouldBind(&userLogin); err != nil {
-// 		return nil, err
-// 	}
+func Login(c *gin.Context, userRepo repositories.UserRepo) (string, error) {
+	userLogin := models.User{}
+	if err := c.ShouldBind(&userLogin); err != nil {
+		return "", err
+	}
 
-// 	user, err := userRepo.Find(userLogin.Email)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	user, err := userRepo.Find(userLogin.Username)
+	if err != nil {
+		return "", errors.New("Not register yet")
+	}
 
-// 	password := []byte(userLogin.Password)
-// 	err = bcrypt.CompareHashAndPassword([]byte(userLogin.Password), password)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	password := []byte(userLogin.Password)
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), password)
+	if err != nil {
+		return "", err
+	}
 
-// 	claims := &jwt.StandardClaims{
-// 		ExpiresAt: time.Now().Add(time.Hour * 24 * 365).Unix(),
-// 		Issuer:    "200lab",
-// 		Id:        strconv.Itoa(int(user.ID)),
-// 	}
-
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-// 	tokenString, _ := token.SignedString("200lab")
-// 	userLogInResponse := &models.LogInResponse{
-// 		ID:       user.ID,
-// 		Fullname: user.Fullname,
-// 		Token:    tokenString,
-// 	}
-// 	c.SetCookie("Token", tokenString, 3600*24*365, "/", "", false, true)
-// 	return userLogInResponse, err
-// }
+	return user.Token, nil
+}

@@ -37,8 +37,19 @@ func initUserRoutes(engine *gin.Engine, db *gorm.DB) {
 		})
 
 		groupRouter.POST("/authen", func(c *gin.Context) {
-
+			userRepo := &repositories.UserRepoImpl{
+				DB: db,
+			}
+			result, err := handler.Login(c, userRepo)
+			if err != nil {
+				c.AbortWithStatusJSON(400, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+			c.JSON(200, result)
 		})
+
 	}
 }
 
