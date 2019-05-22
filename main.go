@@ -22,7 +22,7 @@ func main() {
 	}
 	defer db.Close()
 	db.LogMode(true)
-	db.AutoMigrate(&models.Note{})
+	db.AutoMigrate(&models.Note{}, &models.User{})
 	fileWrite, err := os.Create("access.log")
 	if err != nil {
 		panic(err)

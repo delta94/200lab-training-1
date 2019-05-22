@@ -10,10 +10,8 @@ import (
 type User struct {
 	gorm.Model
 	Username string `gorm:"unique;not null",binding:"required"`
-	Email    string `gorm:"unique;not null",binding:"required"`
+	Token    string `gorm:"unique;"`
 	Password string `binding:"required"`
-	Fullname string
-	Bod      *time.Time
 }
 
 type Login struct {

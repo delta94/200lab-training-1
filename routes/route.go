@@ -7,11 +7,6 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	jwtSecretKey = []byte("ThisIsAVerySecretKey")
-	identityKey  = "identityKey"
-)
-
 func log(c *gin.Context, err error, result interface{}) {
 	if err != nil {
 		c.AbortWithStatusJSON(400, gin.H{
@@ -23,22 +18,28 @@ func log(c *gin.Context, err error, result interface{}) {
 }
 
 func initUserRoutes(engine *gin.Engine, db *gorm.DB) {
-	engine.POST("/signup", func(c *gin.Context) {
-		userRepo := &repositories.UserRepoImpl{
-			DB: db,
-		}
-		result, err := handler.SignUp(c, userRepo)
-		log(c, err, result)
+	groupRouter := engine.Group("v1/users")
 
-	})
+	groupRouter.Use()
+	{
+		groupRouter.POST("/register", func(c *gin.Context) {
+			userRepo := &repositories.UserRepoImpl{
+				DB: db,
+			}
+			result, err := handler.SignUp(c, userRepo)
+			if err != nil {
+				c.AbortWithStatusJSON(400, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
+			c.JSON(201, result)
+		})
 
-	engine.POST("/login", func(c *gin.Context) {
-		userRepo := &repositories.UserRepoImpl{
-			DB: db,
-		}
-		result, err := handler.Login(c, userRepo)
-		log(c, err, result)
-	})
+		groupRouter.POST("/authen", func(c *gin.Context) {
+
+		})
+	}
 }
 
 func initNoteRoutes(engine *gin.Engine, db *gorm.DB) {
@@ -81,4 +82,5 @@ func initNoteRoutes(engine *gin.Engine, db *gorm.DB) {
 
 func InitRoutes(engine *gin.Engine, db *gorm.DB) {
 	initNoteRoutes(engine, db)
+	initUserRoutes(engine, db)
 }
